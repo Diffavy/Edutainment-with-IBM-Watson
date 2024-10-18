@@ -1,69 +1,100 @@
-# Importing the pygame module
 import pygame
 from pygame.locals import *
+import math
 
-# Initiate pygame and give permission
-# to use pygame's functionality
+# Initialize pygame
 pygame.init()
 
-# Create a display surface object
-# of specific dimension
+# Create a display surface object for the rocket animation
 window = pygame.display.set_mode((800, 800))
 
-# Load the rocket images and resize them to a smaller size
+# Load and resize the rocket images
 image_Rocket = [
     pygame.transform.scale(pygame.image.load(r"C:\Users\hanna\Pictures\Coursework\Year 4\Group csw ideas\Rocket1.png"), (400, 600)),
     pygame.transform.scale(pygame.image.load(r"C:\Users\hanna\Pictures\Coursework\Year 4\Group csw ideas\Rocket2.png"), (400, 600)),
     pygame.transform.scale(pygame.image.load(r"C:\Users\hanna\Pictures\Coursework\Year 4\Group csw ideas\Rocket3.png"), (400, 600))
 ]
 
-# Creating a new clock object to track the amount of time
+# Create a clock object to control the framerate
 clock = pygame.time.Clock()
 
-# Creating a new variable to iterate over the sprite list
+# Initialize the sprite list iterator
 value = 0
 
-# Creating a boolean variable to control the while loop
+# Run loop control
 run = True
 
-# Creating an infinite loop to run the game
+# Main loop for the rocket animation
 while run:
-
-    # Handling the window close event
+    # Handle the window close event
     for event in pygame.event.get():
         if event.type == QUIT:
-            run = False  # Set run to False to exit the loop
+            run = False
 
-    # Setting the framerate to 3fps just to see the result properly
+    # Set the framerate
     clock.tick(9)
 
-    # Setting 0 in value variable if its value is greater than the length of the sprite list
+    # Reset the sprite iterator if it exceeds the list length
     if value >= len(image_Rocket):
         value = 0
 
-    # Storing the sprite image in an image variable
+    # Get the current rocket image
     image = image_Rocket[value]
 
-    # Creating a variable to store the starting x and y coordinates
-    x = 150
-
-    # Changing the y coordinate according to the value stored in our value variable
-    if value == 0:
-        y = 200
-    else:
-        y = 200
-
-    # Filling the window with black color
+    # Fill the window with black color
     window.fill((0, 0, 0))
 
-    # Displaying the image in the game window
-    window.blit(image, (x, y))
+    # Display the current image at coordinates (150, 200)
+    window.blit(image, (150, 200))
 
-    # Updating the display surface
+    # Update the display surface
     pygame.display.update()
 
-    # Increasing the value of the value variable by 1 after every iteration
+    # Move to the next image in the list
     value += 1
 
-# Quit pygame when the loop ends
+# Create a new clock object for the scrolling background
+clock = pygame.time.Clock()
+
+# Frame size for scrolling background
+FrameHeight = 600
+FrameWidth = 1200
+
+# Create a new display for the scrolling background
+pygame.display.set_caption("Endless Scrolling in pygame")
+screen = pygame.display.set_mode((FrameWidth, FrameHeight))
+
+# Load the background image and convert it
+bg = pygame.image.load(r"C:\Users\hanna\Pictures\Coursework\Year 4\Group csw ideas\Background.png").convert()
+
+# Variables for scrolling
+scroll = 0
+tiles = math.ceil(FrameWidth / bg.get_width()) + 1
+
+# Main loop for the scrolling background
+while True:
+    # Control the scrolling speed
+    clock.tick(33)
+
+    # Draw the background image repeatedly to create scrolling
+    for i in range(tiles):
+        screen.blit(bg, (bg.get_width() * i + scroll, 0))
+
+    # Update the scroll position
+    scroll -= 6
+
+    # Reset the scroll if it goes off-screen
+    if abs(scroll) > bg.get_width():
+        scroll = 0
+
+    # Handle the window close event
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            quit()
+
+    # Update the display
+    pygame.display.update()
+
+# Quit pygame
 pygame.quit()
