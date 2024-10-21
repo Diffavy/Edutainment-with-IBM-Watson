@@ -1,6 +1,6 @@
 import pygame
 import sys
-
+# this is first draft in menu design, colours, theme ,etc 
 pygame.init()
 
 # Screen dimensions to be modified
@@ -32,7 +32,7 @@ rocket_pos = [WIDTH // 2, HEIGHT - 50]
 rocket_speed = 0
 fuel = 100
 
-# Difficulty setting
+# Difficulty setting will be updated 
 difficulty = None
 
 # Arrow button positions
@@ -66,7 +66,7 @@ while running:
                     current_state = STATE_LEVEL
                     difficulty = "Easy"
 
-            # Arrow button interactions in level state
+            # idea of level , arrow button interactions
             elif current_state == STATE_LEVEL:
                 if arrow_buttons["up"].collidepoint(mouse_pos):
                     rocket_pos[1] -= 10
@@ -90,12 +90,12 @@ while running:
         level1_text = small_font.render("Level 1", True, BLACK)
         screen.blit(level1_text, (WIDTH // 2 - level1_text.get_width() // 2, HEIGHT // 2 - 50))
 
-    # Draw level
+    # Start level level
     elif current_state == STATE_LEVEL:
-        # Draw rocket (currently a dot)
+        # rocket (currently a dot)
         pygame.draw.circle(screen, BLACK, (rocket_pos[0], int(rocket_pos[1])), 5)
 
-        # Draw arrow buttons
+        # arrow buttons
         for direction, rect in arrow_buttons.items():
             pygame.draw.rect(screen, RED, rect)
             arrow_text = "^" if direction == "up" else "v"
