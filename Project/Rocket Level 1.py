@@ -37,14 +37,14 @@ class Rocket(pygame.sprite.Sprite):
         self.update_time = pygame.time.get_ticks()
         temp_list = []
         for i in range(2):
-            img = pygame.image.load(f'/Users/oscarlee/Code/{self.character_type}/Idle/{i}rocket.png')
+            img = pygame.image.load(f'../Project/Idle/{i}Rocket_Image.png')
             img = pygame.transform.scale(img, (int(img.get_width()*scale), int(img.get_height()*scale)))
             temp_list.append(img)
         self.animation_list.append(temp_list)
 
         temp_list = []
         for i in range(2):
-            img = pygame.image.load(f'/Users/oscarlee/Code/{self.character_type}/Flying/{i}rocket.png')
+            img = pygame.image.load(f'../Project/Flying/{i}Rocket_Image.png')
             img = pygame.transform.scale(img, (int(img.get_width()*scale), int(img.get_height()*scale)))
             temp_list.append(img)
         self.animation_list.append(temp_list)
