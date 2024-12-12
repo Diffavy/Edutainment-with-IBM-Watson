@@ -125,7 +125,7 @@ def generate_maze():
 class coin:
     def __init__(self):
         ## Load the coin image
-        self.img = pygame.image.load(f'..\\Group Project\\Maze\\coin.png').convert_alpha()
+        self.img = pygame.image.load(f'..\\Project\\Maze\\coin.png').convert_alpha()
         self.img = pygame.transform.scale(self.img, (TILE - 10, TILE - 10))
         self.rect = self.img.get_rect()
         self.set_pos()
@@ -189,15 +189,15 @@ surface = pygame.display.set_mode((width + 300, height))
 clock = pygame.time.Clock()
 
 ## Load background images
-bg_game = pygame.image.load(f'..\\Group Project\\Maze\\main_BG.png').convert()
-bg = pygame.image.load(f'..\\Group Project\\Maze\\side_BG.png').convert() 
+bg_game = pygame.image.load(f'..\\Project\\Maze\\main_BG.png').convert()
+bg = pygame.image.load(f'..\\Project\\Maze\\side_BG.png').convert() 
 
 ## Generate the maze
 maze = generate_maze()
 
 ## Player settings
 player_speed = 5
-player_img = pygame.image.load(f'..\\Group Project\\Maze\\astronaut.png').convert_alpha() 
+player_img = pygame.image.load(f'..\\Project\\Maze\\astronaut.png').convert_alpha() 
 player_img = pygame.transform.scale(
     player_img, (TILE - 2 * maze[0].thickness, TILE - 2 * maze[0].thickness)
 )
