@@ -23,13 +23,13 @@ try:
     resistor_100k_image = pygame.transform.scale(resistor_100k_image, (80, 50))
 
     resistor_1k_image = load_image('1kr.png')
-    resistor_1k_image = pygame.transform.scale(resistor_1k_image, (80, 50))
+    resistor_1k_image = pygame.transform.scale(resistor_1k_image, (76, 46))
 
     resistor_47k = load_image('47kres.png')
     resistor_47k = pygame.transform.scale(resistor_47k, (80, 50))
 
     resistor_1_5k_image = load_image('15kr.png')
-    resistor_1_5k_image = pygame.transform.scale(resistor_1_5k_image, (80, 50))
+    resistor_1_5k_image = pygame.transform.scale(resistor_1_5k_image, (78, 48))
 
     resistor_100_image = load_image('100r.png')
     resistor_100_image = pygame.transform.scale(resistor_100_image, (80, 50))
@@ -50,7 +50,7 @@ try:
     switchon_image = pygame.transform.scale(switchon_image, (80, 40))
 
     legend = load_image('legendm.png')
-    legend = pygame.transform.scale(legend, (400, 300))
+    legend = pygame.transform.scale(legend, (390, 290))
 
 except pygame.error as e:
     print(f"Error loading images: {e}")
@@ -64,23 +64,24 @@ font = pygame.font.Font(None, 36)
 label_font = pygame.font.Font(None, 24)
 
 # Circuit Board area
-circuit_board_rect = pygame.Rect(100, 310, 670, 160) #start (left),height,lenght, thickness
-parallel_area = pygame.Rect(270, 340, 100, 100)
-series_area = pygame.Rect(450, 370, 200, 60)
+initialclick = pygame.Rect(120, 300, 600, 200)
+circuit_board_rect = pygame.Rect(100, 370, 670, 160) #start (left),height,lenght, thickness
+parallel_area = pygame.Rect(270, 400, 200, 100)
+series_area = pygame.Rect(450, 430, 200, 60)
 
 components = {
-    "resistor_1k": {"image": resistor_1k_image, "rect": resistor_1k_image.get_rect(topleft=(100, 50)), "resistance": 1000, "placed": False},
-    "resistor_1_5k": {"image": resistor_1_5k_image, "rect": resistor_1_5k_image.get_rect(topleft=(200, 100)), "resistance": 1500, "placed": False},
-    "resistor_100": {"image": resistor_100_image, "rect": resistor_100_image.get_rect(topleft=(300, 50)), "resistance": 100, "placed": False},
-    "resistor_100k": {"image": resistor_100k_image, "rect": resistor_100k_image.get_rect(topleft=(100, 150)), "resistance": 100000, "placed": False},
-    "resistor_47k": {"image": resistor_47k, "rect": resistor_47k.get_rect(topleft=(300, 150)), "resistance": 4700, "placed": False},
-    "led": {"image": led_off_image, "rect": led_off_image.get_rect(topleft=(650, 365)), "placed": True, "label": "LED 3V"},
-    "battery": {"image": battery_image, "rect": battery_image.get_rect(topleft=(120, 335)), "placed": True, "label": "Battery 10.5V"}
+    "resistor_1k": {"image": resistor_1k_image, "rect": resistor_1k_image.get_rect(topleft=(100, 180)), "resistance": 1000, "placed": False},
+    "resistor_1_5k": {"image": resistor_1_5k_image, "rect": resistor_1_5k_image.get_rect(topleft=(200, 230)), "resistance": 1500, "placed": False},
+    "resistor_100": {"image": resistor_100_image, "rect": resistor_100_image.get_rect(topleft=(300, 180)), "resistance": 100, "placed": False},
+    "resistor_100k": {"image": resistor_100k_image, "rect": resistor_100k_image.get_rect(topleft=(100, 270)), "resistance": 100000, "placed": False},
+    "resistor_47k": {"image": resistor_47k, "rect": resistor_47k.get_rect(topleft=(300, 270)), "resistance": 4700, "placed": False},
+    "led": {"image": led_off_image, "rect": led_off_image.get_rect(topleft=(650, 425)), "placed": True, "label": "LED 3V"},
+    "battery": {"image": battery_image, "rect": battery_image.get_rect(topleft=(120, 395)), "placed": True, "label": "Battery 10.5V"}
 }
 
 switches = [
-    {"image": switchoff_image, "alt_image": switchon_image, "rect": switchoff_image.get_rect(topleft=(280, 340)), "state": False},
-    {"image": switchoff_image, "alt_image": switchon_image, "rect": switchoff_image.get_rect(topleft=(280, 390)), "state": False}
+    {"image": switchoff_image, "alt_image": switchon_image, "rect": switchoff_image.get_rect(topleft=(280, 400)), "state": False},
+    {"image": switchoff_image, "alt_image": switchon_image, "rect": switchoff_image.get_rect(topleft=(280, 450)), "state": False}
 ]
 
 STATE_OVERVIEW = "overview"
@@ -108,17 +109,18 @@ while running:
     elif current_state == STATE_ZOOM:
         screen.blit(zoomed_background, (0, 0))
         pygame.draw.rect(screen, WHITE, circuit_board_rect, 2)
-
+        #pygame.draw.rect(screen, WHITE, parallel_area, 2)
+        #pygame.draw.rect(screen, WHITE, series_area, 2)
         # wires
-        pygame.draw.line(screen, WHITE, (200, 380), (280, 380), 5)
-        pygame.draw.line(screen, WHITE, (280, 380), (280, 350), 5)
-        pygame.draw.line(screen, WHITE, (280, 380), (280, 420), 5)
+        pygame.draw.line(screen, WHITE, (200, 440), (280, 440), 5)
+        pygame.draw.line(screen, WHITE, (280, 400), (280, 440), 5)
+        pygame.draw.line(screen, WHITE, (280, 440), (280, 480), 5)
 
-        pygame.draw.line(screen, WHITE, (360, 350), (450, 350), 5)
-        pygame.draw.line(screen, WHITE, (360, 420), (450, 420), 5)
+        pygame.draw.line(screen, WHITE, (360, 410), (450, 410), 5)
+        pygame.draw.line(screen, WHITE, (360, 480), (450, 480), 5)
 
-        pygame.draw.line(screen, WHITE, (450, 350), (450, 420), 5)
-        pygame.draw.line(screen, WHITE, (450, 400), (650, 400), 5)
+        pygame.draw.line(screen, WHITE, (450, 410), (450, 480), 5)
+        pygame.draw.line(screen, WHITE, (450, 460), (650, 460), 5)
 
         #switches
         for switch in switches:
@@ -133,13 +135,13 @@ while running:
                 screen.blit(label_surface, label_rect)
 
         
-        screen.blit(legend, (400, 0))
-        ohms_text = font.render("Source 10.5V - LED 3V = 7.5V across resistors", True, WHITE)
-        screen.blit(ohms_text, (50, 500))
-        ohms_law = font.render("Target Current: 0.015A | Use Ohm's Law: R = V / I", True, WHITE)
-        screen.blit(ohms_law, (50, 530))
+        screen.blit(legend, (400, 82))
+        ohms_text = font.render("Source 10.5V - LED 3V = 7.5V potential difference", True, WHITE)
+        screen.blit(ohms_text, (50, 10))
+        ohms_law = font.render("I: 0.015A | Rtot = 1 / (1/R1 + 1/R2)", True, WHITE)
+        screen.blit(ohms_law, (50, 37))
         hint = font.render("Use two resistors in parallel + one resistor in series!", True, WHITE)
-        screen.blit(hint, (50, 560))
+        screen.blit(hint, (50, 63))
 
     
     for event in pygame.event.get():
@@ -150,7 +152,7 @@ while running:
             mouse_pos = event.pos
 
             if current_state == STATE_OVERVIEW:
-                if circuit_board_rect.collidepoint(mouse_pos):
+                if initialclick.collidepoint(mouse_pos):
                     current_state = STATE_ZOOM
 
             elif current_state == STATE_ZOOM:
