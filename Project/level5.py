@@ -1,6 +1,7 @@
 import pygame
 import math
 import sys
+import asyncio
 
 wScreen = 800
 hScreen = 640
@@ -92,7 +93,6 @@ def redrawWindow():
     win.blit(bearing_text, (10, 10))
 
     prompt_text = font.render(f'Aim due NE (North East) within 10 (deg)', True, (255, 255, 255))
-    #
     win.blit(prompt_text, (200, 30))
 
     if show_message:
@@ -120,86 +120,95 @@ def restrict_line():
         scale = max_length / length
         line = [line[0], (int(line[0][0] + dx * scale), int(line[0][1] + dy * scale))]
 
-# Initialize
-golfBall = Ball(wScreen // 2, 494, 5, (255, 255, 255))
-line = [(wScreen//2, 494), (wScreen//2, 494)]  # Initialize line
-
-run = True
-time = 0
-power = 0
-angle = 0
-shoot = False
-show_message = False
-is_success = False
-clock = pygame.time.Clock()
-
-target_bearing = 45
-tolerance_deg = 10
-
-target_min = math.radians(target_bearing - tolerance_deg)
-target_max = math.radians(target_bearing + tolerance_deg)
-
-while run:
-    clock.tick(60)
+async def main():
+    global golfBall, line, run, time, power, angle, shoot, show_message, is_success
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-            pygame.quit()
-            sys.exit()
+    # Initialize
+    golfBall = Ball(wScreen // 2, 494, 5, (255, 255, 255))
+    line = [(wScreen//2, 494), (wScreen//2, 494)]  # Initialize line
 
-        if not shoot and event.type == pygame.MOUSEMOTION:
-            pos = pygame.mouse.get_pos()
-            angle = findAngle(pos)
+    run = True
+    time = 0
+    power = 0
+    angle = 0
+    shoot = False
+    show_message = False
+    is_success = False
+    clock = pygame.time.Clock()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if not shoot:
-                golfBall.trail = []
-                golfBall.hit_wall = False
-                x = golfBall.x
-                y = golfBall.y
-                shoot = True
-                power = math.sqrt((line[1][1] - line[0][1]) ** 2 + (line[1][0] - line[0][0]) ** 2)/4
-                angle = findAngle(pygame.mouse.get_pos())
-                time = 0
-                is_success = target_min <= angle <= target_max
-                show_message = True
+    target_bearing = 45
+    tolerance_deg = 10
 
-    if shoot:
-        if golfBall.y < 500 - golfBall.radius and not golfBall.hit_wall:
-            time += 0.05
-            po = Ball.ballPath(x, y, power, angle, time)
-            
-            new_x = max(golfBall.radius, min(wScreen - golfBall.radius, po[0]))
-            new_y = max(golfBall.radius, min(494, po[1]))
-            
-            if new_x <= golfBall.radius or new_x >= wScreen - golfBall.radius:
-                golfBall.hit_wall = True
-                golfBall.wall_hit_pos = (new_x, new_y)
-                golfBall.wall_hit_angle = angle
-                golfBall.x = new_x
-                golfBall.y = new_y
-                golfBall.update_trail()
+    target_min = math.radians(target_bearing - tolerance_deg)
+    target_max = math.radians(target_bearing + tolerance_deg)
+
+    while run:
+        clock.tick(60)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                sys.exit()
+
+            if not shoot and event.type == pygame.MOUSEMOTION:
+                pos = pygame.mouse.get_pos()
+                angle = findAngle(pos)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not shoot:
+                    golfBall.trail = []
+                    golfBall.hit_wall = False
+                    x = golfBall.x
+                    y = golfBall.y
+                    shoot = True
+                    power = math.sqrt((line[1][1] - line[0][1]) ** 2 + (line[1][0] - line[0][0]) ** 2)/4
+                    angle = findAngle(pygame.mouse.get_pos())
+                    time = 0
+                    is_success = target_min <= angle <= target_max
+                    show_message = True
+                    # Use asyncio to hide message after delay
+                    asyncio.create_task(hide_message_after_delay(2))
+
+        if shoot:
+            if golfBall.y < 500 - golfBall.radius and not golfBall.hit_wall:
+                time += 0.05
+                po = Ball.ballPath(x, y, power, angle, time)
+                
+                new_x = max(golfBall.radius, min(wScreen - golfBall.radius, po[0]))
+                new_y = max(golfBall.radius, min(494, po[1]))
+                
+                if new_x <= golfBall.radius or new_x >= wScreen - golfBall.radius:
+                    golfBall.hit_wall = True
+                    golfBall.wall_hit_pos = (new_x, new_y)
+                    golfBall.wall_hit_angle = angle
+                    golfBall.x = new_x
+                    golfBall.y = new_y
+                    golfBall.update_trail()
+                else:
+                    golfBall.x = new_x
+                    golfBall.y = new_y
+                    golfBall.update_trail()
+            elif golfBall.hit_wall:
+                pass
             else:
-                golfBall.x = new_x
-                golfBall.y = new_y
-                golfBall.update_trail()
-        elif golfBall.hit_wall:
-            pass
-        else:
-            shoot = False
-            golfBall.y = 494
-            time = 0
-            pygame.time.set_timer(pygame.USEREVENT, 2000, True)
+                shoot = False
+                golfBall.y = 494
+                time = 0
 
-    if event.type == pygame.USEREVENT:
-        show_message = False
+        if not shoot:
+            line = [(golfBall.x, golfBall.y), pygame.mouse.get_pos()]
+            restrict_line()
+        
+        redrawWindow()
+        await asyncio.sleep(0)  # Yield control to the event loop
 
-    if not shoot:
-        line = [(golfBall.x, golfBall.y), pygame.mouse.get_pos()]
-        restrict_line()
-    
-    redrawWindow()
+async def hide_message_after_delay(delay):
+    await asyncio.sleep(delay)
+    global show_message
+    show_message = False
 
+# Run the asyncio event loop
+asyncio.run(main())
 pygame.quit()
 sys.exit()
