@@ -62,16 +62,17 @@ font = pygame.font.Font(None, 36)
 label_font = pygame.font.Font(None, 24)
 
 # Circuit Board area
-circuit_board_rect = pygame.Rect(110, 340, 670, 110)
+initialclick = pygame.Rect(120, 300, 600, 200)
+circuit_board_rect = pygame.Rect(80, 400, 670, 140)
 
 components = {
-    "resistor_270": {"image": resistor_270_image, "rect": resistor_270_image.get_rect(topleft=(100, 50)), "resistance": 270, "placed": False},
-    "resistor_330": {"image": resistor_330_image, "rect": resistor_330_image.get_rect(topleft=(200, 100)), "resistance": 330, "placed": False},
-    "resistor_470": {"image": resistor_470_image, "rect": resistor_470_image.get_rect(topleft=(300, 50)), "resistance": 470, "placed": False},
-    "resistor_1k": {"image": resistor_100k_image, "rect": resistor_100k_image.get_rect(topleft=(100, 150)), "resistance": 1000, "placed": False},
-    "resistor_100": {"image": resistor_100_image, "rect": resistor_100_image.get_rect(topleft=(300, 150)), "resistance": 100, "placed": False},
-    "led": {"image": led_off_image, "rect": led_off_image.get_rect(topleft=(650, 365)), "placed": True, "label": "LED 3V"},
-    "battery": {"image": battery_image, "rect": battery_image.get_rect(topleft=(120, 350)), "placed": True, "label": "Battery 9V"}
+    "resistor_270": {"image": resistor_270_image, "rect": resistor_270_image.get_rect(topleft=(100, 180)), "resistance": 270, "placed": False},
+    "resistor_330": {"image": resistor_330_image, "rect": resistor_330_image.get_rect(topleft=(200, 230)), "resistance": 330, "placed": False},
+    "resistor_470": {"image": resistor_470_image, "rect": resistor_470_image.get_rect(topleft=(300, 180)), "resistance": 470, "placed": False},
+    "resistor_1k": {"image": resistor_100k_image, "rect": resistor_100k_image.get_rect(topleft=(100, 270)), "resistance": 1000, "placed": False},
+    "resistor_100": {"image": resistor_100_image, "rect": resistor_100_image.get_rect(topleft=(300, 270)), "resistance": 100, "placed": False},
+    "led": {"image": led_off_image, "rect": led_off_image.get_rect(topleft=(650, 425)), "placed": True, "label": "LED 3V"},
+    "battery": {"image": battery_image, "rect": battery_image.get_rect(topleft=(120, 410)), "placed": True, "label": "Battery 9V"}
     
 }
 
@@ -107,13 +108,13 @@ while running:
         pygame.draw.line(screen, WHITE, (components["battery"]["rect"].centerx + 50, components["battery"]["rect"].centery), (components["led"]["rect"].centerx - 35, components["led"]["rect"].centery), 5)
 
      
-        ohms_text = font.render("Source 9V - LED 3V = 6V drop across resistors", True, WHITE)
-        screen.blit(ohms_text, (50, 500))
-        ohms_law = font.render("Current needed is  I = 0.01A ,   Use Ohm's Law: R = V / I ", True, WHITE)
-        hint = font.render("What resistors do we need to get to the R value?", True, WHITE)
-        screen.blit(ohms_law, (50, 530))
-        screen.blit(hint, (50, 560))
-        screen.blit(legend, (400, 0))
+        ohms_text = font.render("Source 9V - LED 3V = 6V potential difference", True, WHITE)
+        screen.blit(ohms_text, (50, 10))
+        ohms_law = font.render("Current I = 0.01A ,   Use Ohm's Law: V = I R ", True, WHITE)
+        hint = font.render("What resistors do we need to get to the Total Resistance (R)?", True, WHITE)
+        screen.blit(ohms_law, (50, 40))
+        screen.blit(hint, (50, 70))
+        screen.blit(legend, (400, 82))
 
         for name, comp in components.items():
             screen.blit(comp["image"], comp["rect"])
@@ -131,7 +132,7 @@ while running:
             mouse_pos = event.pos
 
             if current_state == STATE_OVERVIEW:
-                if circuit_board_rect.collidepoint(mouse_pos):
+                if initialclick.collidepoint(mouse_pos):
                     current_state = STATE_ZOOM
 
             elif current_state == STATE_ZOOM:
