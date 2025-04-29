@@ -5,7 +5,7 @@ import random
 
 pygame.init()
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 640
 TILE_SIZE = 60
 GRID_WIDTH, GRID_HEIGHT = 8, 8
 CURRENT_SOURCE_POS = (0, 4)
@@ -35,8 +35,8 @@ try:
     rocket_img = pygame.image.load(os.path.join(base_path, 'rocketbroken.png'))
     rocket_img = pygame.transform.scale(rocket_img, (220, 250))
 
-    space_bg = pygame.image.load(os.path.join(base_path, 'openspace.jpg'))
-    space_bg = pygame.transform.scale(space_bg, (800, 600))
+    space_bg = pygame.image.load(os.path.join(base_path, 'deepspace.jpg'))
+    space_bg = pygame.transform.scale(space_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     rocket_solenoid_img = pygame.image.load(os.path.join(base_path, 'rocketsolenoid.png'))
     rocket_solenoid_img = pygame.transform.scale(rocket_solenoid_img, (800, 600))
@@ -162,12 +162,14 @@ def draw_grid():
                 pygame.draw.circle(screen, GREEN, rect.center, 10)
 
     F, B, L = calculate_force(selected_path)
-    #draw_text(f"F = B × I × L", 10, SCREEN_HEIGHT - 120)
-    draw_text(f"You will need 3 Strong Field Areas", 10, SCREEN_HEIGHT - 120)
-    draw_text(f"B = {B:.2f} T,  F = {F:.2f} N", 10, SCREEN_HEIGHT - 90)
-    draw_text(f"Target F = {REQUIRED_FORCE} N", 490, SCREEN_HEIGHT - 120)
-    draw_text(f"Max Steps Allowed = {MAX_PATH_LENGTH} (Lenght)", 490, SCREEN_HEIGHT - 350)
-    draw_text(f"What total B would you need knowing F, I and L?", 10, SCREEN_HEIGHT - 50)
+    #draw_text(f"F = B × I × L", 10, 10)
+    draw_text(f"Max Steps Allowed = {MAX_PATH_LENGTH} (Length)", 10, 520)
+
+    #draw_text(f"You will need 3 Strong Field Areas", 10, SCREEN_HEIGHT - 120)
+    draw_text(f"B = {B:.2f} T,  F = {F:.2f} N", 10, 555)
+    draw_text(f"Target F = {REQUIRED_FORCE} N", 495, SCREEN_HEIGHT - 120)
+    draw_text(f"Calculate B needed and find the path from the ", 10, 580)
+    draw_text(f"source where the tiles add up to the value", 10, 600)
 
 def handle_grid_click(pos):
     global game_state
@@ -207,6 +209,7 @@ while True:
         screen.blit(space_bg, (0, 0))
         screen.blit(rocket_img, (280, 240))
         draw_text("Click the rocket to begin repairs", 250, 520)
+        draw_text("Oh no! Our electromagnetic field is damaged!", 190, 170)
     elif game_state == 'grid':
         draw_grid()
         screen.blit(legend, (490, 5))
