@@ -136,7 +136,7 @@ while running:
 
         
         screen.blit(legend, (400, 82))
-        ohms_text = font.render("Source 10.5V - LED 3V = 7.5V potential difference", True, WHITE)
+        ohms_text = font.render("Source 13.5V - LED 3V = 10.5V potential difference", True, WHITE)
         screen.blit(ohms_text, (50, 10))
         ohms_law = font.render("I: 0.015A | Rtot = 1 / (1/R1 + 1/R2)", True, WHITE)
         screen.blit(ohms_law, (50, 37))
