@@ -32,7 +32,7 @@ def check_answer():
 
 window = tk.Tk()
 window.title("Intelligence Test")
-window.geometry("800x600")
+window.geometry("800x640")
 
 tk.Label(window, text="F=_a").pack(pady=10)
 answer1_input = tk.Entry(window)
