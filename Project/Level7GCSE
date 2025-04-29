@@ -1,0 +1,69 @@
+import tkinter as tk
+from tkinter import messagebox
+import asyncio
+
+
+async def check_answer_async():
+    await asyncio.sleep(1) 
+
+    ans1 = answer1_input.get()
+    ans2 = answer2_input.get()
+    ans3 = answer3_input.get()
+    ans4 = answer4_input.get()
+    ans5 = answer5_input.get()
+    ans6 = answer6_input.get()
+    
+    correct_ans1 = "m"
+    correct_ans2 = "t"
+    correct_ans3 = "v"
+    correct_ans4 = "g"
+    correct_ans5 = "f"
+    correct_ans6 = "I"
+
+    if (ans1.lower() == correct_ans1.lower() and ans2.lower() == correct_ans2.lower() and 
+        ans3.lower() == correct_ans3.lower() and ans4.lower() == correct_ans4.lower() and 
+        ans5.lower() == correct_ans5.lower() and ans6.lower() == correct_ans6.lower()):
+        messagebox.showinfo("Correct!", "You're an intelligent lifeform and worthy of being kept alive!")
+    else:
+        messagebox.showerror("Incorrect!", "You will now be terminated!")
+
+def check_answer():
+    asyncio.create_task(check_answer_async())
+
+window = tk.Tk()
+window.title("Intelligence Test")
+window.geometry("800x600")
+
+tk.Label(window, text="F=_a").pack(pady=10)
+answer1_input = tk.Entry(window)
+answer1_input.pack(pady=5)
+
+tk.Label(window, text="S=v_").pack(pady=10)
+answer2_input = tk.Entry(window)
+answer2_input.pack(pady=5)
+
+tk.Label(window, text="E=(1/2)m_^2").pack(pady=10)
+answer3_input = tk.Entry(window)
+answer3_input.pack(pady=5)
+
+tk.Label(window, text="E=m_h").pack(pady=10)
+answer4_input = tk.Entry(window)
+answer4_input.pack(pady=5)
+
+tk.Label(window, text="v=_λ").pack(pady=10)
+answer5_input = tk.Entry(window)
+answer5_input.pack(pady=5)
+
+tk.Label(window, text="Q=_t").pack(pady=10)
+answer6_input = tk.Entry(window)
+answer6_input.pack(pady=5)
+
+tk.Button(window, text="Submit", command=check_answer).pack(pady=20)
+
+def update_asyncio():
+    window.after(100, update_asyncio)  # Keep this function running
+    if not asyncio.get_event_loop().is_running():
+        asyncio.get_event_loop().run_forever()
+window.after(100, update_asyncio)
+
+window.mainloop()
