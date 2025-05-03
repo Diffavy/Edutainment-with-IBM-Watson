@@ -1,0 +1,98 @@
+import tkinter as tk
+from tkinter import messagebox
+
+def check_answer(selected_answer, correct_answer, next_question, window):
+    if selected_answer == correct_answer:
+        window.destroy()
+        if next_question:
+            open_next_question(next_question)
+        else:
+            messagebox.showinfo("Escape!", "You've escaped the base and can get home!")
+    else:
+        messagebox.showinfo("Incorrect answer!", "You're trapped in this room and will be... EXTERMINATED!")
+
+def open_next_question(next_question):
+    question_window = tk.Toplevel(root)
+    question_window.title(f"Question {next_question['question_number']}")
+    question_window.geometry("800x600")
+
+    question_label = tk.Label(question_window, text=next_question['question'], font=("Arial", 12))
+    question_label.pack(pady=10)
+
+    var = tk.StringVar()
+    var.set(None)
+
+    for answer in next_question['answers']:
+        rb = tk.Radiobutton(question_window, text=answer, value=answer, variable=var, font=("Arial", 10))
+        rb.pack(anchor="w", padx=20)
+
+    def on_submit():
+        selected_answer = var.get()
+        next_index = next_question['question_number']
+        next_q = questions[next_index] if next_index < len(questions) else None
+        check_answer(selected_answer, next_question['correct_answer'], next_q, question_window)
+
+    submit_button = tk.Button(question_window, text="Submit", command=on_submit)
+    submit_button.pack(pady=10)
+
+questions = [
+    {
+        "question_number": 1,
+        "question": "The gravity of the moon is 1.62m/s^2, what's the gravitational force acting on an astronaut with mass 75kg?",
+        "answers": ["121.5N", "46.3N", "122.0N", "0.2N"],
+        "correct_answer": "121.5N"
+    },
+    {
+        "question_number": 2,
+        "question": "What's the force of the astronaut on earth?",
+        "answers": ["735.8N", "121.5N", "7.6N", "572.3N"],
+        "correct_answer": "735.8N"
+    },
+    {
+        "question_number": 3,
+        "question": "What particle triggers fission of a uranium nucleus?",
+        "answers": ["Proton", "Neutron", "Electron"],
+        "correct_answer": "Neutron"
+    },
+    {
+        "question_number": 4,
+        "question": "What is nuclear fusion?",
+        "answers": ["The splitting of an atom", "The joining of two light nuclei", "An explosion"],
+        "correct_answer": "The joining of two light nuclei"
+    },
+    {
+        "question_number": 5,
+        "question": "The momentum of a car is 3280kgm/s and it's mass is 200kg, what's it's speed?",
+        "answers": ["20.5m/s", "656000m/s", "16.4m/s","16.0m/s"],
+        "correct_answer": "16.4m/s"
+    },
+    {
+        "question_number": 6,
+        "question": "What's the kinetic energy of the car from the previous question?",
+        "answers": ["3280J", "1640J", "26896J"],
+        "correct_answer": "26896J"
+    },
+    {
+        "question_number": 7,
+        "question": "A cuboid of iron has the dimensions 2x8x4 (all in m), the density of iron is 7.6kg/m^3 so what's the block's mass?",
+        "answers": ["486.4kg", "8.4kg", "64.0kg","0.1kg","283.8kg"],
+        "correct_answer": "16.4m/s"
+    },
+    {
+        "question_number": 8,
+        "question": "Calculate the difference in the pressure if the 8x4 and 2x4 surfaces are in contact with the ground.",
+        "answers": ["45.6kg/m^2", "8.4kg", "64.0kg","0.1kg","283.8kg"],
+        "correct_answer": "16.4m/s"
+    },
+    
+    
+]
+
+root = tk.Tk()
+root.title("The Final Level")
+root.geometry("800x600") 
+
+start_button = tk.Button(root, text="Begin Your Escape", font=("Arial", 12), command=lambda: open_next_question(questions[0]))
+start_button.pack(pady=70)
+
+root.mainloop()
