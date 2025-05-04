@@ -7,10 +7,8 @@ WIDTH, HEIGHT = 800, 640
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Choose Your Planet")
 
-
 background = pygame.image.load("C:/Users/luuxm/OneDrive/Escritorio/CLASSES/groupproject/images/deepspace.jpg")
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-
 
 planets = {
     "Mars": pygame.transform.scale(pygame.image.load("C:/Users/luuxm/OneDrive/Escritorio/CLASSES/groupproject/images/mars2.png"), (130, 130)),
@@ -19,7 +17,6 @@ planets = {
     "Alien Planet": pygame.transform.scale(pygame.image.load("C:/Users/luuxm/OneDrive/Escritorio/CLASSES/groupproject/images/alienplanet2.png"), (130, 130)),
     "Neptune": pygame.transform.scale(pygame.image.load("C:/Users/luuxm/OneDrive/Escritorio/CLASSES/groupproject/images/neptuno2.png"), (135, 125)),
 }
-
 
 planet_positions = {
     "Mars": (50, 450),
@@ -33,58 +30,59 @@ font = pygame.font.Font(None, 24)
 text_color = (255, 255, 255)
 green = (0, 255, 0)
 
-# Fuel properties
 fuel_available = "Methane & Liquid Oxygen"
-total_fuel = 10000  # Arbitrary fuel units
-fuel_per_unit_distance = 2  # Fuel consumption per distance unit
+fuel_available_tons = 500  
+total_fuel = fuel_available_tons * 1000  # convert to kg
+fuel_per_unit_distance = 0.001  # 1 kg per 1000 km
 
-# distance from Earth (starting planet) to each planet
+#  conversion
+unit_to_km = {
+    "km": 1,
+    "Gm": 1_000_000,
+    "AU": 149_600_000,
+    "Mm": 1000
+}
+
 distances = {
-    "Mars": 4000,
-    "Saturn": 8000,
-    "Uranus": 10000,  
-    "Alien Planet": 12000,
-    "Neptune": 15000,
+    "Mars": (225, "Gm"),              # Gigameters, 225 million km
+    "Saturn": (9.56, "AU"),            # ~1.43 billion km
+    "Uranus": (2_870_000_000, "km"),   
+    "Alien Planet": (3.5, "AU"),        # fictional, far
+    "Neptune": (4_500_000, "Mm")   #Megameters
 }
 
-
-gravity_and_d = {
-    "Mars": "Gravity: 3.71 m/s² | Distance: 5000L",
-    "Saturn": "Gravity: 10.44 m/s² | Distance: 15000L",
-    "Uranus": "Gravity: 9.81 m/s² | Distance: 8000L",
-    "Alien Planet": "Gravity: 7.2 m/s² | Distance: 11000L",
-    "Neptune": "Gravity: 11.15 m/s² | Distance: 13000L",
-}
-
-display_info = None
-selected_planet = None
-
-dragging = None
 text_positions = {
     "Mars": [100, 50], "Saturn": [450, 50], "Uranus": [250, 50], "Alien Planet": [550, 50], "Neptune": [350, 50]
 }
 matched = {name: False for name in planets}
 
+display_info = None
+selected_planet = None
+
+dragging = None
+
 def draw_screen():
     screen.blit(background, (0, 0))
-    # display fuel information
-    fuel_text = font.render(f"Fuel Type: {fuel_available} | Total Fuel: {total_fuel} units", True, text_color)
+
+    # fuel info
+    fuel_text = font.render(f"Fuel Type: {fuel_available} | Total Fuel: {fuel_available_tons} metric tones", True, text_color)
     screen.blit(fuel_text, (20, 120))
-    fuel_usage_text = font.render(f"Fuel Consumption: {fuel_per_unit_distance} units per distance", True, text_color)
+    fuel_usage_text = font.render(f"Fuel Consumption: {fuel_per_unit_distance} kg per km", True, text_color)
     screen.blit(fuel_usage_text, (20, 150))
+
     for name, pos in planet_positions.items():
         screen.blit(planets[name], pos)
+
     for name, pos in text_positions.items():
         color = green if matched[name] else text_color
         text = font.render(name, True, color)
         screen.blit(text, pos)
+
     if display_info:
         info_text = font.render(display_info, True, text_color)
         screen.blit(info_text, (WIDTH // 2 - 100, HEIGHT - 50))
+
     pygame.display.flip()
-    
-    
-    
 
 def check_matching():
     for name in planets:
@@ -100,7 +98,10 @@ def handle_mouse_down(pos):
     for name, (x, y) in planet_positions.items():
         if x <= pos[0] <= x + 100 and y <= pos[1] <= y + 100:
             selected_planet = name
-            required_fuel = distances[name] * fuel_per_unit_distance
+            dist_val, dist_unit = distances[name] #only take number value of distance
+            distance_km = dist_val * unit_to_km[dist_unit] #distance in km
+            required_fuel = distance_km * fuel_per_unit_distance # fuel required
+            print(f" {name} requires: {distance_km:.2f} · {fuel_per_unit_distance:.3f} = {required_fuel:.2f} kg of fuel")
             if required_fuel <= total_fuel:
                 show_popup(f"Setting course to {name}!")
             else:
@@ -120,7 +121,8 @@ def handle_mouse_motion(pos):
     else:
         for name, (x, y) in planet_positions.items():
             if x <= pos[0] <= x + 100 and y <= pos[1] <= y + 100:
-                display_info = f"Distance: {distances[name]} units"
+                dist_val, dist_unit = distances[name]
+                display_info = f"Distance: {dist_val} {dist_unit}"
                 break
 
 def show_popup(message):
@@ -139,7 +141,7 @@ def main():
     while running:
         screen.fill((0, 0, 0))
         draw_screen()
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -149,14 +151,11 @@ def main():
                 handle_mouse_up()
             elif event.type == pygame.MOUSEMOTION:
                 handle_mouse_motion(event.pos)
-        
+
         pygame.display.flip()
 
     pygame.quit()
     sys.exit()
-
-def run_level4():
-    main()
 
 if __name__ == "__main__":
     main()
