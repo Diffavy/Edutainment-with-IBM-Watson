@@ -1,0 +1,40 @@
+!pip install python_dotenv
+!pip install ibm_watson
+import os
+from dotenv import load_dotenv
+from ibm_watson import TextToSpeechV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+load_dotenv()
+URL = ("https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/c55838b7-7c27-4dfd-95ee-c04b03f5133f")
+API_KEY = ("W55F7doTyvlxuo92bCHMx3g9KTaTvisOgQoHt2TXfYJ_")
+
+authenticator = IAMAuthenticator(API_KEY)
+
+text_to_speech = TextToSpeechV1(authenticator=authenticator)
+text_to_speech.set_service_url(service_url=URL)
+
+line1 = "Frank I need a ship, I haven't heard from Dave in weeks and I've heard something's gone wrong."
+line2 = "That's worrying, all I have is this old piece of junk but I think it'll fly and I can help you from down here."
+line3 = "If it flies it'll do, time to go to space!"
+
+
+with open("Scene2.mp3","wb") as audio_file:
+    audio1 = text_to_speech.synthesize(
+        text=line1,
+        accept="audio/mp3",
+        voice="en-US_HenryV3Voice",
+    ).get_result()
+    audio2 = text_to_speech.synthesize(
+        text=line2,
+        accept="audio/mp3",
+        voice="en-US_MichaelV3Voice",
+    ).get_result() 
+    audio3 = text_to_speech.synthesize(
+        text=line3,
+        accept="audio/mp3",
+        voice="en-US_HenryV3Voice",
+    ).get_result()
+    audio_file.write(audio1.content)
+    audio_file.write(audio2.content)
+    audio_file.write(audio3.content)
